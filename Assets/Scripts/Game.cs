@@ -135,7 +135,7 @@ public class Game : MonoBehaviour
             gameOver = false;
 
             //Using UnityEngine.SceneManagement is needed here
-            SceneManager.LoadScene("Game"); //Restarts the game by loading the scene over again
+            SceneManager.LoadScene("Masterdrez"); //Restarts the game by loading the scene over again
         }
     }
     
@@ -145,7 +145,7 @@ public class Game : MonoBehaviour
 
         //Using UnityEngine.UI is needed here
         GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = playerWinner + " is the winner";
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = playerWinner + " es el ganador";
 
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
     }
