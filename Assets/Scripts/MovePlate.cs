@@ -35,10 +35,10 @@ public class MovePlate : MonoBehaviour
         {
             GameObject cp = controller.GetComponent<Game>().GetPosition(matrixX, matrixY);
 
-            if (cp.name == "white_king") controller.GetComponent<Game>().Winner("Amarillo y Azul");
-            if (cp.name == "black_king") controller.GetComponent<Game>().Winner("Amarillo y Azul");
-            if (cp.name == "yellow_king") controller.GetComponent<Game>().Winner("Blanco y Negro");
-            if (cp.name == "blue_king") controller.GetComponent<Game>().Winner("Blanco y Negro");
+            if (cp.name == "white_king") controller.GetComponent<Game>().Winner("La pareja: Amarilla y Azul");
+            if (cp.name == "black_king") controller.GetComponent<Game>().Winner("La pareja: Amarilla y Azul");
+            if (cp.name == "yellow_king") controller.GetComponent<Game>().Winner("La pareja: Blanca y Negra");
+            if (cp.name == "blue_king") controller.GetComponent<Game>().Winner("La pareja: Blanca y Negra");
 
             Destroy(cp);
         }
@@ -60,6 +60,9 @@ public class MovePlate : MonoBehaviour
 
         //Destroy the move plates including self
         reference.GetComponent<Chessman>().DestroyMovePlates();
+
+        // para enroque
+        reference.GetComponent<Chessman>().SetHasMoved(true);
     }
 
     public void SetCoords(int x, int y)
@@ -77,4 +80,7 @@ public class MovePlate : MonoBehaviour
     {
         return reference;
     }
+
+   
+
 }

@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class Chessman : MonoBehaviour
 {
+    // Variables y metodos para Enroque Largo y Corto
+    private bool hasMoved = false;
+    public bool HasMoved() => hasMoved;
+    public void SetHasMoved(bool moved) => hasMoved = moved;
+
+    public string GetPlayer() => player;
+
+
+
+
     //References to objects in our Unity Scene
     public GameObject controller;
     public GameObject movePlate;
@@ -170,6 +180,7 @@ public class Chessman : MonoBehaviour
             case "blue_king":
             case "yellow_king":
                 SurroundMovePlate();
+                TryCastling();
                 break;
             case "black_rook":
             case "white_rook":
@@ -186,15 +197,19 @@ public class Chessman : MonoBehaviour
                 LineMovePlate(-1, 0);
                 break;
             case "black_pawn":
+                PawnMovePlate(xBoard, yBoard - 2);
                 PawnMovePlate(xBoard, yBoard - 1);
                 break;
             case "white_pawn":
+                PawnMovePlate(xBoard, yBoard + 2);
                 PawnMovePlate(xBoard, yBoard + 1);
                 break;
             case "blue_pawn":
+                PawnMovePlate(xBoard-2, yBoard);
                 PawnMovePlate(xBoard-1, yBoard);
                 break;
             case "yellow_pawn":
+                PawnMovePlate(xBoard+2, yBoard);
                 PawnMovePlate(xBoard+1, yBoard);
                 break;
         }
@@ -328,4 +343,64 @@ public class Chessman : MonoBehaviour
         mpScript.SetReference(gameObject);
         mpScript.SetCoords(matrixX, matrixY);
     }
+
+    // Enroque Corto y Largo
+
+    private void TryCastling()
+    {
+        Game sc = controller.GetComponent<Game>();
+
+        if (hasMoved) return;
+
+        // Enroque corto
+        if (sc.CanCastle(player, true)) // true = corto
+        {
+            if (player == "white" || player == "black")
+                MovePlateSpawn(xBoard + 2, yBoard); // Corto: derecha
+            else
+                MovePlateSpawn(xBoard, yBoard - 2); // Corto vertical: hacia abajo
+        }
+
+        // Enroque largo
+        if (sc.CanCastle(player, false)) // false = largo
+        {
+            if (player == "white" || player == "black")
+                MovePlateSpawn(xBoard - 2, yBoard); // Largo: izquierda
+            else
+                MovePlateSpawn(xBoard, yBoard + 2); // Largo vertical: hacia arriba
+        }
+    }
+
+
+    public void MovePiece(int x, int y)
+    {
+        int prevX = GetXBoard();
+        int prevY = GetYBoard();
+
+        Game sc = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+
+        // Detectar enroque si soy el rey y me muevo dos casillas
+        if (this.name.Contains("_king") && (Mathf.Abs(x - prevX) == 2 || Mathf.Abs(y - prevY) == 2))
+        {
+            if (sc.TryCastle(this, x, y)) return; // El enroque se realiza y se termina
+        }
+
+        // Lógica normal de movimiento
+        sc.SetPositionEmpty(prevX, prevY);
+
+        SetXBoard(x);
+        SetYBoard(y);
+        SetCoords();
+
+        sc.SetPosition(this.gameObject);
+        SetHasMoved(true);
+
+        sc.NextTurn();
+    }
+
+
+
+
+
+
 }
