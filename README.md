@@ -4,12 +4,11 @@ Creado con Unity y C#.
 
 Características:
 - Haz clic para moverte.
-- Blanco, azul, negro y amarillo pueden ganar o perder el juego.
+- Se juega pareja: Blanco y Negro Vs. Amarillo y Azul pueden ganar o perder el juego.
 - Cambia de jugador.
 - Reinicia el juego al final.
 
 Funciones adicionales qué se debe mejorar:
-- Movimiento de salto inicial para peones.
 - Comprobar si hay jaque.
 - Comprobar si hay jaque mate.
 - Enroque (cambio de torre y rey).
