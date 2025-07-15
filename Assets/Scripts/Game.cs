@@ -9,7 +9,6 @@ public class Game : MonoBehaviour
     //Reference from Unity IDE
     public GameObject chesspiece;
 
-
     //Matrices needed, positions of each of the GameObjects
     //Also separate arrays for the players in order to easily keep track of them all
     //Keep in mind that the same objects are going to be in "positions" and "playerBlack"/"playerWhite"
@@ -18,8 +17,6 @@ public class Game : MonoBehaviour
     private GameObject[] playerWhite = new GameObject[16];
     private GameObject[] playerYellow = new GameObject[16];
     private GameObject[] playerBlue = new GameObject[16];
-
-
 
     //current turn
     private string currentPlayer = "white";
@@ -199,30 +196,13 @@ public class Game : MonoBehaviour
             y += dy;
         }
 
-        // Verifica que el rey no pase por una casilla atacada
-        int steps = 2; // enroque siempre es mover 2 casillas el rey
-        for (int i = 1; i <= steps; i++) // empieza en 1
-        {
-            int checkX = kingX + dx * i;
-            int checkY = kingY + dy * i;
-
-            foreach (var opponent in new[] { "white", "black", "yellow", "blue" })
-            {
-                if (opponent == player) continue;
-                if (IsSquareUnderAttack(checkX, checkY, opponent)) return false;
-            }
-        }
-
-
         return true;
     }
-
 
     public void PerformCastle(string player, bool isShort)
     {
         int kingX, kingY, rookX, rookY, newKingX, newKingY, newRookX, newRookY;
 
-        
         switch (player)
         {
             case "white":
@@ -300,122 +280,6 @@ public class Game : MonoBehaviour
         return false;
     }
 
-    public bool IsSquareUnderAttack(int x, int y, string byPlayer)
-{
-    for (int i = 0; i < 14; i++)
-    {
-        for (int j = 0; j < 14; j++)
-        {
-            GameObject pieceObj = GetPosition(i, j);
-            if (pieceObj == null) continue;
 
-            Chessman cm = pieceObj.GetComponent<Chessman>();
 
-            if (cm != null && cm.GetPlayer() == byPlayer)
-            {
-                if (DoesPieceThreatenSquare(cm, i, j, x, y))
-                    return true;
-            }
-        }
-    }
-
-    return false;
 }
-
-    private bool DoesPieceThreatenSquare(Chessman piece, int fromX, int fromY, int targetX, int targetY)
-    {
-        string pieceName = piece.name;
-
-        int dx = targetX - fromX;
-        int dy = targetY - fromY;
-
-        int absDx = Mathf.Abs(dx);
-        int absDy = Mathf.Abs(dy);
-
-        switch (pieceName)
-        {
-            // --- Caballos ---
-            case string n when n.Contains("knight"):
-                return (absDx == 2 && absDy == 1) || (absDx == 1 && absDy == 2);
-
-            // --- Torres ---
-            case string n when n.Contains("rook"):
-                if (dx == 0 || dy == 0)
-                    return IsClearPath(fromX, fromY, targetX, targetY);
-                break;
-
-            // --- Alfiles ---
-            case string n when n.Contains("bishop"):
-                if (absDx == absDy)
-                    return IsClearPath(fromX, fromY, targetX, targetY);
-                break;
-
-            // --- Reinas ---
-            case string n when n.Contains("queen"):
-                if ((dx == 0 || dy == 0) || (absDx == absDy))
-                    return IsClearPath(fromX, fromY, targetX, targetY);
-                break;
-
-            // --- Reyes ---
-            case string n when n.Contains("king"):
-                return absDx <= 1 && absDy <= 1;
-
-            // --- Peones ---
-            case string n when n.Contains("pawn"):
-                return DoesPawnThreaten(fromX, fromY, targetX, targetY, piece.GetPlayer());
-        }
-
-        return false;
-    }
-
-    private bool IsClearPath(int fromX, int fromY, int toX, int toY)
-    {
-        int dx = Mathf.Clamp(toX - fromX, -1, 1);
-        int dy = Mathf.Clamp(toY - fromY, -1, 1);
-
-        int x = fromX + dx;
-        int y = fromY + dy;
-
-        while (x != toX || y != toY)
-        {
-            if (GetPosition(x, y) != null)
-                return false;
-
-            x += dx;
-            y += dy;
-        }
-
-        return true;
-    }
-
-    private bool DoesPawnThreaten(int fromX, int fromY, int toX, int toY, string player)
-    {
-        int dx = toX - fromX;
-        int dy = toY - fromY;
-
-        switch (player)
-        {
-            case "white": return (dy == 1 && Mathf.Abs(dx) == 1);
-            case "black": return (dy == -1 && Mathf.Abs(dx) == 1);
-            case "blue": return (dx == -1 && Mathf.Abs(dy) == 1);
-            case "yellow": return (dx == 1 && Mathf.Abs(dy) == 1);
-        }
-
-        return false;
-    }
-
-
-    public GameObject[] GetPiecesOfPlayer(string player)
-    {
-        switch (player)
-        {
-            case "white": return playerWhite;
-            case "black": return playerBlack;
-            case "yellow": return playerYellow;
-            case "blue": return playerBlue;
-            default: return new GameObject[0];
-        }
-    }
-    
-}
-

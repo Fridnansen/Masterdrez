@@ -9,9 +9,6 @@ public class Chessman : MonoBehaviour
     public bool HasMoved() => hasMoved;
     public void SetHasMoved(bool moved) => hasMoved = moved;
 
-    public string GetPlayer() => player;
-
-
 
 
     //References to objects in our Unity Scene
@@ -350,27 +347,26 @@ public class Chessman : MonoBehaviour
     {
         Game sc = controller.GetComponent<Game>();
 
+        // Asume que el rey está en la columna 4 (e) para blanco/negro
         if (hasMoved) return;
 
-        // Enroque corto
+        // Enroque corto (torre en columna 7)
         if (sc.CanCastle(player, true)) // true = corto
         {
-            if (player == "white" || player == "black")
-                MovePlateSpawn(xBoard + 2, yBoard); // Corto: derecha
-            else
-                MovePlateSpawn(xBoard, yBoard - 2); // Corto vertical: hacia abajo
+            MovePlateSpawn(xBoard - 2, yBoard); // Mueve rey dos casillas a la derecha
+            LineMovePlate(1, 0);
+            LineMovePlate(0, 1);
         }
 
-        // Enroque largo
+        // Enroque largo (torre en columna 0)
         if (sc.CanCastle(player, false)) // false = largo
         {
-            if (player == "white" || player == "black")
-                MovePlateSpawn(xBoard - 2, yBoard); // Largo: izquierda
-            else
-                MovePlateSpawn(xBoard, yBoard + 2); // Largo vertical: hacia arriba
-        }
-    }
+            MovePlateSpawn(xBoard + 2, yBoard); // Mueve rey dos casillas a la izquierda
 
+        }
+
+        
+    }
 
     public void MovePiece(int x, int y)
     {
@@ -397,7 +393,6 @@ public class Chessman : MonoBehaviour
 
         sc.NextTurn();
     }
-
 
 
 
